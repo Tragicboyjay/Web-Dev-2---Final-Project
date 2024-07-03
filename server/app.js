@@ -2,10 +2,20 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
-
 const cors = require('cors');
+const bodyParser = require('body-parser');
+
+// routes
+const authRoute = require('./routes/authRoute');
 
 app.use(cors());
+
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// router
+app.use("/auth", authRoute)
 
 app.get('/', (req,res) => {
     res.send("test")
