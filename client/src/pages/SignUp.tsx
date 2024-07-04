@@ -12,6 +12,7 @@ import {
   } from "@chakra-ui/react";
   import React, { useState, ChangeEvent, FormEvent } from "react";
   import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
+  import { useAuth } from '../context/authContext'; // Adjust the import path as needed
   
   type UserType = 'patient' | 'doctor' | '';
   
@@ -39,6 +40,7 @@ import {
     const [userType, setUserType] = useState<UserType>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
   
+    const { loginUser } = useAuth();
     const navigate = useNavigate();
   
     const handleSignUp = async (e: FormEvent) => {
@@ -90,6 +92,7 @@ import {
           return;
         }
   
+        loginUser(data.user); // Call loginUser from context to save user data
         navigate("/");
   
       } catch (error) {
