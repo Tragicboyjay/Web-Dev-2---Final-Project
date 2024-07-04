@@ -25,7 +25,7 @@ async function createUser(req,res) {
 
             const addedPatient = await newPatient.save();
 
-            return res.status(201).json({ "message": "Patient created successfuly!", "patient": addedPatient })   
+            return res.status(201).json({ "message": "Patient created successfuly!", "user": addedPatient })   
         }
 
         else if (type === "doctor") {
@@ -45,7 +45,7 @@ async function createUser(req,res) {
 
             const addedDoctor = await newDoctor.save();
 
-            return res.status(201).json({ "message": "Doctor created successfuly!", "doctor": addedDoctor })   
+            return res.status(201).json({ "message": "Doctor created successfuly!", "user": addedDoctor })   
         }
 
     } catch (e) {
@@ -80,8 +80,7 @@ async function authenticateUser(req,res) {
             lastName: existingUser.lastName,
             email: existingUser.email,
             id: existingUser._id,
-            following: existingUser.following,
-            // token: generateToken(existingUser._id)
+            practice: existingUser.practice
         }});
     } catch (e) {
         console.error('Error creating user:', error);
