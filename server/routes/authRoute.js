@@ -8,7 +8,7 @@ const {
 = require("../controller/authController");
 
 router.post("/create/:type", createUser);
-router.post("/authenticate", authenticateUser);
+router.post("/authenticate/:type", authenticateUser);
 
 
 module.exports = router;
