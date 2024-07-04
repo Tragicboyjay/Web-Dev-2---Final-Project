@@ -1,3 +1,4 @@
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Box,
   Heading,
@@ -9,6 +10,7 @@ import {
   Container,
 } from "@chakra-ui/react";
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {
   return (
@@ -23,9 +25,13 @@ const Home: React.FC = () => {
             <Text fontSize="xl" mb={6}>
               Your health is our priority. Experience the best medical care.
             </Text>
-            <Button colorScheme="teal" size="lg">
+            
+            <Link to="/make-appointment">
+              <Button rightIcon={<ArrowForwardIcon />} colorScheme='teal' variant='outline' size="lg">
               Book an Appointment
-            </Button>
+              </Button>
+            </Link>
+             
           </Container>
         </Box>
 
