@@ -25,7 +25,7 @@ const doctorSchema = new Schema({
     required: true
   },
   availability: {
-    type: Map,
+    type: Object,
     of: [String],
   },
 }, {

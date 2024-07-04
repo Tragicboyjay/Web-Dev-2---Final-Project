@@ -4,11 +4,11 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const Doctor = require('./models/Doctor');
 
 // routes
 const authRoute = require("./routes/authRoute");
 const doctorRoute = require("./routes/doctorRoute");
+const appointmentRoute = require("./routes/appointmentRoute");
 
 app.use(cors());
 
@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // router
 app.use("/auth", authRoute);
 app.use("/doctor", doctorRoute);
+app.use("/appointment", appointmentRoute);
 
 app.get("/", (req, res) => {
   res.send("test");
