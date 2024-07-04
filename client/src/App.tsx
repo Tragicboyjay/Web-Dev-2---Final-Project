@@ -4,6 +4,7 @@ import RootLayout from './layouts/RootLayout'
 import Home from './pages/Home'
 import DoctorDashboard from "./pages/DoctorDashboard";
 import SignUp from './pages/SignUp';
+import SignIn from './pages/SignIn';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -11,6 +12,7 @@ const router = createBrowserRouter(
       <Route index element={<Home />} />
       <Route path='/dashboard' element={<DoctorDashboard />} />
       <Route path='/sign_up' element={<SignUp />} />
+      <Route path='/sign_in' element={<SignIn/>} />
     </Route>
   )
 )

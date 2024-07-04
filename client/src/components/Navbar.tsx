@@ -68,7 +68,7 @@ const Navbar: FC = () => {
               <Link as={RouterLink} to="/dashboard">
                 Dashboard
               </Link>
-              <Link as={RouterLink} to="/login">
+              <Link as={RouterLink} to="/sign_in">
                 Login
               </Link>
             </HStack>
