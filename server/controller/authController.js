@@ -55,7 +55,38 @@ async function createUser(req,res) {
 }
 
 async function authenticateUser(req,res) {
+    const type = req.params.type;
+    const { email, password } = req.body;
 
+    try {
+
+        const existingUser = type === "patient" ? await Patient.findOne({ email }) : await Doctor.findOne({ email });
+
+        if (!existingUser) {
+            return res.status(401).json({ message: 'The email or password you\'ve entered is incorect' });
+        }
+
+        const existingUserPassword = existingUser.password
+
+        const passwordMatch = await bcrypt.compare(password,existingUserPassword);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'The email or password you\'ve entered is incorect' });
+        }
+
+        res.status(200).json({ message: 'Login successful', 
+        user: {
+            firstName: existingUser.firstName,
+            lastName: existingUser.lastName,
+            email: existingUser.email,
+            id: existingUser._id,
+            following: existingUser.following,
+            // token: generateToken(existingUser._id)
+        }});
+    } catch (e) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 }
 
 module.exports = {
