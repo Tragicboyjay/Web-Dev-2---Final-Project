@@ -1,19 +1,30 @@
-import { Box, Flex, Link, HStack, IconButton, useDisclosure, Stack, Spacer, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Link,
+  HStack,
+  IconButton,
+  useDisclosure,
+  Stack,
+  Image,
+} from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { Link as RouterLink } from "react-router-dom";
 import { FC } from "react";
-import logo from '../assets/logo.png';
+import logo from "../assets/logo.png";
 const Links = ["Home", "Book an Appointment", "Login"];
 
 const NavLink: FC<{ children: React.ReactNode }> = ({ children }) => (
   <Link
     px={2}
     py={1}
-    rounded={'md'}
+    rounded={"md"}
     _hover={{
-      textDecoration: 'none',
-      bg: 'gray.200',
+      textDecoration: "none",
+      bg: "gray.200",
     }}
-    href={'#'}>
+    href={"#"}
+  >
     {children}
   </Link>
 );
@@ -33,19 +44,35 @@ const Navbar: FC = () => {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"} w={"100vw"}>
-            <Box><Image src={logo} alt="Hospital Logo" objectFit="contain" maxW={"50px"}/></Box>
-            
+            <Box>
+              <Image
+                src={logo}
+                alt="Hospital Logo"
+                objectFit="contain"
+                maxW={"50px"}
+              />
+            </Box>
+
             <HStack
               as={"nav"}
               ms={"auto"}
               spacing={4}
-              display={{ base: "none", md: "flex" }}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
+              display={{ base: "none", md: "flex" }}
+            >
+              <Link as={RouterLink} to="/">
+                Home
+              </Link>
+              <Link as={RouterLink} to="/appointment">
+                Make an Appointment
+              </Link>
+              <Link as={RouterLink} to="/dashboard">
+                Dashboard
+              </Link>
+              <Link as={RouterLink} to="/login">
+                Login
+              </Link>
             </HStack>
           </HStack>
-        
         </Flex>
 
         {isOpen ? (
@@ -63,4 +90,3 @@ const Navbar: FC = () => {
 };
 
 export default Navbar;
-

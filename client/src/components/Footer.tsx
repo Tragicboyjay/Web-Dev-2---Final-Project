@@ -3,7 +3,6 @@ import {
     Container,
     Stack,
     Text,
-    Link,
     IconButton,
     useColorModeValue,
   } from "@chakra-ui/react";
@@ -20,12 +19,7 @@ import {
         <Container as={Stack} maxW="6xl" spacing={4}>
           <Stack direction={{ base: "column", md: "row" }} spacing={4} justify="space-between" align="center">
             <Text>© 2024 Unity Medical Center. All rights reserved</Text>
-            <Stack direction={"row"} spacing={6}>
-              <Link href={"#"}>Home</Link>
-              <Link href={"#"}>Book an Appointment</Link>
-              <Link href={"#"}>Login</Link>
-              
-            </Stack>
+        
             <Stack direction={"row"} spacing={6}>
               <IconButton
                 as="a"
