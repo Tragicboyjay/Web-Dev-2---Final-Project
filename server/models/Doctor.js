@@ -157,5 +157,5 @@ const seedDoctors = async () => {
 };
 
 // Seed doctors data on server startup
-seedDoctors();
+// seedDoctors();
 module.exports = Doctor;

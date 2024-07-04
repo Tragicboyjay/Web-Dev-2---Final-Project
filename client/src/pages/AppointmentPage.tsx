@@ -42,7 +42,7 @@ const AppointmentBooking: React.FC = () => {
     const fetchDoctors = async () => {
       try {
         const response = await axios.get<Doctor[]>(
-          "http://localhost:8080/api/doctors"
+          "http://localhost:8080/doctor"
         );
         setDoctors(response.data);
       } catch (error) {
