@@ -62,7 +62,7 @@ const Navbar: FC = () => {
               <Link as={RouterLink} to="/">
                 Home
               </Link>
-              <Link as={RouterLink} to="/appointment">
+              <Link as={RouterLink} to="/make-appointment">
                 Make an Appointment
               </Link>
               <Link as={RouterLink} to="/dashboard">
