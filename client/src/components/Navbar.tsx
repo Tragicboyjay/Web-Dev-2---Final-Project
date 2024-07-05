@@ -12,7 +12,7 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { FC } from "react";
 import logo from "../assets/logo.png";
-const Links = ["Home", "Book an Appointment", "Login"];
+const Links = ["Home", "Book an Appointment", "Login", "Profile"];
 
 const NavLink: FC<{ children: React.ReactNode }> = ({ children }) => (
   <Link
@@ -70,6 +70,9 @@ const Navbar: FC = () => {
               </Link>
               <Link as={RouterLink} to="/sign_in">
                 Login
+              </Link>
+              <Link as={RouterLink} to="/profile">
+                Profile
               </Link>
             </HStack>
           </HStack>

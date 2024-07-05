@@ -4,19 +4,17 @@ const router = express.Router();
 const {
     getAppointmentByDoctor,
     getAppointmentByPatient,
-    cancleAppointment,
+    cancelAppointment,
     editAppointmentDate,
     bookAppointment
 } 
 = require("../controller/appointmentController");
 
 router.get("/doctor/:id", getAppointmentByDoctor);
-router.get("/patient/:id", getAppointmentByPatient);
-
-router.post("/book", bookAppointment)
 
 router.patch("/edit/:id", editAppointmentDate)
+router.post("/book", bookAppointment)
+router.delete("/:id", cancelAppointment);
 
-router.delete("/:id", cancleAppointment);
-
+router.get("/patient/:id", getAppointmentByPatient);
 module.exports = router;

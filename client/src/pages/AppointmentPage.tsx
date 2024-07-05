@@ -16,7 +16,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import CustomRadioCard from "../components/CustomRadioCard"; // Adjust the path based on your project structure
 import TimeSlotRadioCard from "../components/TimeSlotRadioCard"; // Adjust the path based on your project structure
-
+import { getDoctors } from "../api/Doctor"
 interface Doctor {
   _id: string;
   firstName: string;
@@ -40,14 +40,8 @@ const AppointmentBooking: React.FC = () => {
 
   useEffect(() => {
     const fetchDoctors = async () => {
-      try {
-        const response = await axios.get<Doctor[]>(
-          "http://localhost:8080/doctor"
-        );
-        setDoctors(response.data);
-      } catch (error) {
-        console.error("Error fetching doctors:", error);
-      }
+      const doctorData = await getDoctors();
+      setDoctors(doctorData);
     };
 
     fetchDoctors();
@@ -83,7 +77,7 @@ const AppointmentBooking: React.FC = () => {
     event.preventDefault();
     if (selectedDate && selectedDoctor && selectedTime) {
       try {
-        await axios.post("http://localhost:8080/api/appointments", {
+        await axios.post("http://localhost:8080/appointments", {
           date: selectedDate,
           time: selectedTime,
           doctor: selectedDoctor._id,

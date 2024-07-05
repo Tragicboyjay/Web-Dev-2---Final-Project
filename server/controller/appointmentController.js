@@ -86,7 +86,7 @@ async function getAppointmentByDoctor(req, res) {
     }
 }
 
-async function cancleAppointment(req, res) { 
+async function cancelAppointment(req, res) { 
     const appointmentId = req.params.id;
 
     try {
@@ -137,7 +137,7 @@ async function editAppointmentDate(req,res) {
 module.exports = {
     getAppointmentByDoctor,
     getAppointmentByPatient,
-    cancleAppointment,
+    cancelAppointment,
     editAppointmentDate,
     bookAppointment
 }

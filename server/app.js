@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const authRoute = require("./routes/authRoute");
 const doctorRoute = require("./routes/doctorRoute");
 const appointmentRoute = require("./routes/appointmentRoute");
+const patientRout = require("./routes/patientRoute");
 
 app.use(cors());
 
@@ -20,10 +21,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/auth", authRoute);
 app.use("/doctor", doctorRoute);
 app.use("/appointment", appointmentRoute);
+app.use("/profile", patientRout);
 
-app.get("/", (req, res) => {
-  res.send("test");
-});
 
 mongoose
   .connect(process.env.CONNECTION_STRING)

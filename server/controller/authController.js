@@ -5,7 +5,7 @@ const Doctor = require("../models/Doctor");
 
 async function createUser(req, res) {
     const type = req.params.type;
-    const { firstName, lastName, password, email, practice } = req.body;
+    const { firstName, lastName, password, email, practice, appointments } = req.body;
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -19,7 +19,8 @@ async function createUser(req, res) {
                 firstName,
                 lastName,
                 email,
-                password: hashedPassword
+                password: hashedPassword,
+                appointments
             });
 
             const addedPatient = await newPatient.save();
@@ -29,7 +30,8 @@ async function createUser(req, res) {
                 _id: addedPatient._id,
                 firstName: addedPatient.firstName,
                 lastName: addedPatient.lastName,
-                email: addedPatient.email
+                email: addedPatient.email,
+                appointments: addedPatient.appointments
             };
 
             return res.status(201).json({ message: "Patient created successfully!", user: userWithoutPassword });

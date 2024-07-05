@@ -12,8 +12,12 @@ const appointmentSchema = new Schema({
     ref: 'Patient',
     required: true
   },
-  startDate: {
+  date: {
     type: Date,
+    required: true
+  },
+  startTime: {
+    type: String,
     required: true
   },
 }, {
@@ -30,12 +34,15 @@ const seedAppointments = async () => {
         {
           doctorId: "6687013941a1ed8d2d745bee", // a doctor in your db
           patientId: "6685a8f4cdc66ccf15f7a156", // a patient in your db
-          startDate: new Date('2024-07-10T09:00:00Z'),
+          startTime: "09:00:00",
+          date: new Date('2024-07-10')
+
         },
         {
           doctorId: "6687013941a1ed8d2d745bee",
           patientId: "6685a8f4cdc66ccf15f7a156",
-          startDate: new Date('2024-07-11T11:00:00Z'),
+          startTime: '11:00:00',
+          date: new Date('2024-07-11')
         }
       ];
   

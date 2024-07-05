@@ -6,6 +6,7 @@ import DoctorDashboard from "./pages/DoctorDashboard";
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import AppointmentPage from './pages/AppointmentPage';
+import ProfilePage from './pages/PofilePage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -14,6 +15,7 @@ const router = createBrowserRouter(
       <Route path='/dashboard' element={<DoctorDashboard />} />
       <Route path='/sign_up' element={<SignUp />} />
       <Route path='/sign_in' element={<SignIn/>} />
+      <Route path='/profile' element={<ProfilePage/>} />
       <Route path='/make-appointment' element={<AppointmentPage />} />
     </Route>
   )

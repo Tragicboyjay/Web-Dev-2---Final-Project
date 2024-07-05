@@ -1,6 +1,6 @@
 // types.ts
 
-export interface Doctor {
+export interface Doctor extends User{
     firstName: string;
     lastName: string;
     email: string;
@@ -10,20 +10,32 @@ export interface Doctor {
     userType: 'doctor';
   }
   
-  export interface Patient {
+  export interface Patient extends User{
     firstName: string;
     lastName: string;
     email: string;
     password: string;
-    appointments: string[];
+    appointments: Appointment[];
     userType: 'patient';
   }
   
-  export type User = Doctor | Patient;
+  export interface Appointment{
+    patientID: string,
+    doctorID: string,
+    date: Date,
+    startTime: string
+  }
+  export interface User {
+    id: string;
+    email: string;
+    userType: 'patient' | 'doctor'; 
+    appointments: Appointment[]
+  }
   
   export interface AuthContextType {
     user: User | null;
     loginUser: (userData: User) => void;
     logoutUser: () => void;
+    
   }
   
