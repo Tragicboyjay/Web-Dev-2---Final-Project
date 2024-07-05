@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Flex,
@@ -15,6 +15,8 @@ import {
   Avatar,
   VStack,
 } from "@chakra-ui/react";
+import { useAuth } from '../context/authContext';
+import { useNavigate } from 'react-router-dom';
 
 const appointments = [
   {
@@ -36,7 +38,17 @@ const appointments = [
   // Add more appointments as needed
 ];
 
+
+
 const DoctorDashboard: React.FC = () => {
+  const { user, logoutUser } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(user && user.userType != "doctor") navigate("/")
+  
+  },)
+
   return (
     <Container maxW="container.xl" py={8}>
       <Heading as="h1" mb={6} textAlign="center">
