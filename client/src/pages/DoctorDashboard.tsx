@@ -42,7 +42,9 @@ const DoctorDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchAppointments = async () => {
-    const doctorId = user?._id;
+    setFetchError("")
+    
+    const doctorId = user?._id || user?.id;
 
     try {
       const response = await fetch(`http://localhost:8080/appointment/doctor/${doctorId}`);
@@ -71,11 +73,9 @@ const DoctorDashboard: React.FC = () => {
     if (user && user.userType !== "doctor") {
       navigate("/");
     }
+    fetchAppointments();
   }, [user]);
 
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
 
   return (
     <Container maxW="container.xl" py={8}>
