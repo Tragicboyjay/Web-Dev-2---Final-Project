@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 const Home: React.FC = () => {
   return (
     <>
-      <Box as="main">
+      <Box as="main" className="main">
         {/* Hero Section */}
         <Box bg="teal.500" color="white" py={20} textAlign="center">
           <Container maxW="container.lg">

@@ -11,7 +11,7 @@ import Home from "./pages/Home";
 import ProfilePage from "./pages/PofilePage";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-
+import './App.css';
 const router = createBrowserRouter(
   createRoutesFromElements(
  

@@ -12,6 +12,7 @@ import {
   const Footer: FC = () => {
     return (
       <Box
+        className="footer"
         bg={useColorModeValue("gray.100", "gray.900")}
         color={useColorModeValue("gray.700", "gray.200")}
         py={10}
