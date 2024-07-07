@@ -42,7 +42,7 @@ const DoctorDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchAppointments = async () => {
-    const doctorId = user?.id;
+    const doctorId = user?._id;
 
     try {
       const response = await fetch(`http://localhost:8080/appointment/doctor/${doctorId}`);

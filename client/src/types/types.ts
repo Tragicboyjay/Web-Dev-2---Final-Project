@@ -26,7 +26,7 @@ export interface Doctor extends User{
     startTime: string
   }
   export interface User {
-    id: string;
+    _id?: string;
     email: string;
     userType: 'patient' | 'doctor'; 
     appointments: Appointment[]

@@ -59,12 +59,12 @@ const SignUp: React.FC = () => {
           throw new Error("Practice field must be filled in for doctors.");
         }
         newUser = {
+        
           firstName: firstNameInput,
           lastName: lastNameInput,
           email: emailInput,
           password: passwordInput,
           practice: practiceInput,
-          availability: [],
           userType: 'doctor'
         } as Doctor;
       } else {
@@ -72,8 +72,7 @@ const SignUp: React.FC = () => {
           firstName: firstNameInput,
           lastName: lastNameInput,
           email: emailInput,
-          password: passwordInput,
-          appointments: [],
+          password: passwordInput,        
           userType: 'patient'
         } as Patient;
       }

@@ -16,7 +16,8 @@ import axios from "axios";
 import dayjs from "dayjs";
 import CustomRadioCard from "../components/CustomRadioCard"; // Adjust the path based on your project structure
 import TimeSlotRadioCard from "../components/TimeSlotRadioCard"; // Adjust the path based on your project structure
-import { getDoctors } from "../api/Doctor"
+import { getDoctors } from "../api/Doctor";
+
 interface Doctor {
   _id: string;
   firstName: string;
@@ -75,12 +76,13 @@ const AppointmentBooking: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    
     if (selectedDate && selectedDoctor && selectedTime) {
       try {
-        await axios.post("http://localhost:8080/appointments", {
-          date: selectedDate,
-          time: selectedTime,
-          doctor: selectedDoctor._id,
+        await axios.post("http://localhost:8080/appointment/book", {
+          
+          startDate: selectedDate,
+          doctorId: selectedDoctor._id,
         });
         alert("Appointment booked successfully!");
       } catch (error) {
