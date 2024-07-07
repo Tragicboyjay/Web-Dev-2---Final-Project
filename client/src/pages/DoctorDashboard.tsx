@@ -38,7 +38,7 @@ const DoctorDashboard: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [todayAppointments, setTodayAppointments] = useState<Appointment[]>([]);
 
-  const { user, logoutUser } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const fetchAppointments = async () => {

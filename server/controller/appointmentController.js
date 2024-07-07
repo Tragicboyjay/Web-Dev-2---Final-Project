@@ -50,7 +50,6 @@ async function bookAppointment(req, res) {
     }
 }
 
-
 async function getAppointmentByPatient(req, res) {
     const patientId = req.params.id;
   
@@ -61,7 +60,8 @@ async function getAppointmentByPatient(req, res) {
         return res.status(401).json({ message: 'The patient does not exist' });
       }
   
-      const appointments = await Appointment.find({ patientId: patientId });
+      // Populate the doctorId field to include firstName and lastName
+      const appointments = await Appointment.find({ patientId: patientId }).populate('doctorId', 'firstName lastName');
   
       return res.status(200).json({ message: 'Appointments fetched successfully', appointments: appointments });
     } catch (e) {

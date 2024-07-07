@@ -52,10 +52,17 @@ const seedAppointments = async () => {
           reason: "sick"
         },
         {
+          doctorId: "6687013941a1ed8d2d745bea",
+          patientId: "6685a8f4cdc66ccf15f7a156",
+          time: '15:00:00',
+          date: "2024-07-07",
+          reason: "sick"
+        },
+        {
           doctorId: "668832be9c2f364fcb45a852",
           patientId: "6685a8f4cdc66ccf15f7a156",
-          time: '11:00:00',
-          date: "2024-07-07",
+          time: '15:00:00',
+          date: "2024-07-06",
           reason: "sick"
         }
       ];

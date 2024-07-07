@@ -9,7 +9,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { FC } from "react";
 import logo from "../assets/logo.png";
 const Links = ["Home", "Book an Appointment", "Login", "Profile"];
@@ -32,7 +32,14 @@ const NavLink: FC<{ children: React.ReactNode }> = ({ children }) => (
 
 const Navbar: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user } = useAuth();
+  const { user, logoutUser } = useAuth();
+
+  const navigate = useNavigate()
+
+  const handleLogOut = () => {
+    logoutUser();
+    navigate('/sign_in');
+  }
   return (
     <>
       <Box bg="gray.100" px={4}>
@@ -68,9 +75,16 @@ const Navbar: FC = () => {
               </Link>
               { user && user.userType === 'patient' &&
                 <Link as={RouterLink} to="/make-appointment">
-                  Make an Appointment
+                  Book Appointment
                 </Link>
               }
+
+              { user && user.userType === 'patient' &&
+                <Link as={RouterLink} to="/profile">
+                  Profile
+                </Link>
+              }
+
               { user && user.userType === "doctor" &&
                 <Link as={RouterLink} to="/dashboard">
                   Dashboard
@@ -80,6 +94,12 @@ const Navbar: FC = () => {
               { !user &&               
                 <Link as={RouterLink} to="/sign_in">
                   Login
+                </Link>
+              }
+
+              { user &&               
+                <Link onClick={handleLogOut}>
+                  Log Out
                 </Link>
               }
 

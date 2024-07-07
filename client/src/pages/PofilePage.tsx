@@ -1,118 +1,136 @@
-import React, { useState } from 'react';
-import { useAuth } from '../context/authContext';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
 import {
   Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
+  Flex,
+  Heading,
   Table,
-  Tbody,
-  Td,
-  Th,
   Thead,
+  Tbody,
   Tr,
-  useToast,
-} from '@chakra-ui/react';
+  Th,
+  Td,
+  TableCaption,
+  Container,
+  Text,
+} from "@chakra-ui/react";
+import { useAuth } from '../context/authContext';
+import { useNavigate } from 'react-router-dom';
 
-const UserProfilePage: React.FC = () => {
+interface CustomError extends Error {
+  message: string;
+}
+
+interface Appointment {
+  _id: string;
+  doctorId: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  };
+  date: string;
+  time: string;
+  reason?: string;
+}
+
+const PatientDashboard: React.FC = () => {
+  const [fetchError, setFetchError] = useState("");
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+
   const { user } = useAuth();
-  const [newEmail, setNewEmail] = useState('');
-  const toast = useToast();
+  const navigate = useNavigate();
 
-  const handleEmailChange = async () => {
+  const fetchAppointments = async () => {
+    const patientId = user?.id;
+
     try {
-      await axios.put('/email', { newEmail });
-      toast({
-        title: 'Email updated.',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
+      const response = await fetch(`http://localhost:8080/appointment/patient/${patientId}`);
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      const data = await response.json();
+      const allAppointments: Appointment[] = data.appointments;
+
+      // Filter appointments for today and future
+      const today = new Date().toISOString().split('T')[0];
+      const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const filteredAppointments = allAppointments.filter(appointment => {
+        if (appointment.date < today) return false;
+        if (appointment.date === today && appointment.time <= currentTime) return false;
+        return true;
       });
-    
+
+      // Sort appointments by date and time
+      filteredAppointments.sort((a, b) => {
+        if (a.date === b.date) {
+          return a.time.localeCompare(b.time);
+        }
+        return a.date.localeCompare(b.date);
+      });
+
+      setAppointments(filteredAppointments);
     } catch (error) {
-      toast({
-        title: 'Error updating email.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
+      const typedError = error as CustomError;
+      setFetchError(typedError.message);
     }
   };
 
-  const cancelAppointment = async (appointmentId: string) => {
-    try {
-      await axios.delete(`/api/appointments/${appointmentId}`);
-      toast({
-        title: 'Appointment canceled successfully.',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-     
-    
-    } catch (error) {
-      toast({
-        title: 'Error canceling appointment.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
+  useEffect(() => {
+    if (user && user.userType !== "patient") {
+      navigate("/");
     }
-  };
+  }, [user]);
 
-  if (!user) {
-    return <p>Loading...</p>;
-  }
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   return (
-    <Box p={5}>
-      <Box mb={4}>
-        <FormControl id="email">
-          <FormLabel>Email address</FormLabel>
-          <Input
-            type="email"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-          />
-          <Button mt={4} onClick={handleEmailChange}>
-            Update Email
-          </Button>
-        </FormControl>
-      </Box>
-      <Box>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Date</Th>
-              <Th>Time</Th>
-              <Th>Doctor</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {user.appointments.map((appointment: any) => (
-              <Tr key={appointment.id}>
-                <Td>{appointment.date}</Td>
-                <Td>{appointment.startTime}</Td>
-                <Td>{appointment.doctor}</Td>
-                <Td>
-                  <Button
-                    colorScheme="red"
-                    size="sm"
-                    onClick={() => cancelAppointment(appointment.id)}
-                  >
-                    Cancel
-                  </Button>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Box>
-    </Box>
+    <Container maxW="container.xl" py={8}>
+      <Heading as="h1" mb={6} textAlign="center">
+        Patient Dashboard
+      </Heading>
+      <Flex direction="column" align="center" justify="center">
+        <Box w="100%" bg="white" boxShadow="md" borderRadius="md" p={4}>
+          <Heading as="h2" size="lg" mb={4}>
+            My Appointments
+          </Heading>
+          {fetchError && <Text align="center" color="red.500">{fetchError}</Text>}
+          {appointments.length === 0 && (
+            <Text align="center" color="gray.500" mb={4}>
+              No appointments scheduled.
+            </Text>
+          )}
+          {appointments.length > 0 && (
+            <Table variant="simple">
+              <TableCaption>Appointments</TableCaption>
+              <Thead>
+                <Tr>
+                  <Th>Doctor</Th>
+                  <Th>Date</Th>
+                  <Th>Time</Th>
+                  <Th>Reason</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {appointments.map((appointment) => (
+                  <Tr key={appointment._id}>
+                    <Td>{`${appointment.doctorId.firstName} ${appointment.doctorId.lastName}`}</Td>
+                    <Td>{appointment.date}</Td>
+                    <Td>{appointment.time}</Td>
+                    <Td>{appointment.reason ?? 'N/A'}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
+        </Box>
+      </Flex>
+    </Container>
   );
 };
 
-export default UserProfilePage;
+export default PatientDashboard;
