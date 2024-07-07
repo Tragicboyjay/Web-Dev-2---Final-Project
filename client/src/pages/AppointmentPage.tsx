@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import CustomRadioCard from "../components/CustomRadioCard"; // Adjust the path based on your project structure
 import TimeSlotRadioCard from "../components/TimeSlotRadioCard"; // Adjust the path based on your project structure
 import { getDoctors } from "../api/Doctor";
+import { useAuth } from '../context/authContext';
 
 interface Doctor {
   _id: string;
@@ -38,6 +39,8 @@ const AppointmentBooking: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null); // State to hold selected time slot
 
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -76,6 +79,9 @@ const AppointmentBooking: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    const patientId = user?._id || user?.id;
+
     
     if (selectedDate && selectedDoctor && selectedTime) {
       try {
@@ -83,6 +89,7 @@ const AppointmentBooking: React.FC = () => {
           
           startDate: selectedDate,
           doctorId: selectedDoctor._id,
+          patientId: patientId
         });
         alert("Appointment booked successfully!");
       } catch (error) {
