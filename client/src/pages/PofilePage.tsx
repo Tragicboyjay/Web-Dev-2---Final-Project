@@ -40,29 +40,35 @@ const PatientDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchAppointments = async () => {
-    const patientId = user?._id;
-
+    const patientId = user?._id || user?.id;
+  
+    if (!patientId) {
+      setFetchError("Patient ID is not available.");
+      return;
+    }
+  
     try {
+        setFetchError("")
       const response = await fetch(`http://localhost:8080/appointment/patient/${patientId}`);
-
+  
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message);
       }
-
+  
       const data = await response.json();
       const allAppointments: Appointment[] = data.appointments;
-
+  
       // Filter appointments for today and future
       const today = new Date().toISOString().split('T')[0];
       const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
+  
       const filteredAppointments = allAppointments.filter(appointment => {
         if (appointment.date < today) return false;
         if (appointment.date === today && appointment.time <= currentTime) return false;
         return true;
       });
-
+  
       // Sort appointments by date and time
       filteredAppointments.sort((a, b) => {
         if (a.date === b.date) {
@@ -70,23 +76,22 @@ const PatientDashboard: React.FC = () => {
         }
         return a.date.localeCompare(b.date);
       });
-
+  
       setAppointments(filteredAppointments);
     } catch (error) {
       const typedError = error as CustomError;
       setFetchError(typedError.message);
     }
   };
+  
 
   useEffect(() => {
     if (user && user.userType !== "patient") {
       navigate("/");
     }
+    fetchAppointments();
   }, [user]);
 
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
 
   return (
     <Container maxW="container.xl" py={8}>

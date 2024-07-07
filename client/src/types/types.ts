@@ -1,6 +1,8 @@
 // types.ts
 
 export interface Doctor extends User{
+    _id?: string;
+    id?: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -11,6 +13,8 @@ export interface Doctor extends User{
   }
   
   export interface Patient extends User{
+    _id?: string;
+    id?: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -27,6 +31,7 @@ export interface Doctor extends User{
   }
   export interface User {
     _id?: string;
+    id?: string;
     email: string;
     userType: 'patient' | 'doctor'; 
     appointments: Appointment[]
