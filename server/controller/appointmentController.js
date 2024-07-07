@@ -4,49 +4,52 @@ const Appointment = require("../models/Appointment")
 
 async function bookAppointment(req, res) {
     const { doctorId, startDate, patientId } = req.body;
-  
+
     try {
         if (!doctorId || !startDate || !patientId) {
             return res.status(400).json({ message: 'Doctor ID, patient ID, and start date are required' });
         }
-  
+
         const startDateObj = new Date(startDate);
         const dateString = startDateObj.toISOString().split('T')[0];
-        const timeString = startDateObj.toISOString().split('T')[1].slice(0, 5); 
-  
+        const timeString = startDateObj.toISOString().split('T')[1].slice(0, 5);
+
         const doctor = await Doctor.findById(doctorId);
 
-        console.log(doctor.availability)
-  
         if (!doctor) {
             return res.status(404).json({ message: 'Doctor not found' });
         }
-  
+
         if (!doctor.availability[dateString]) {
             return res.status(400).json({ message: 'Doctor is not available on the requested date' });
         }
-  
+
         if (!doctor.availability[dateString].includes(timeString)) {
             return res.status(400).json({ message: 'Doctor is not available at the requested time' });
         }
-  
+
         const newAppointment = new Appointment({
             doctorId: doctor._id,
-            patientId: patientId, 
-            startDate: startDateObj
+            patientId: patientId,
+            date: dateString,
+            time: timeString
         });
-  
+
         const savedAppointment = await newAppointment.save();
-  
+
+        // Push the appointment ID to the patient's appointments array
+        await Patient.findByIdAndUpdate(patientId, { $push: { appointments: savedAppointment._id } });
+
         doctor.availability[dateString] = doctor.availability[dateString].filter(time => time !== timeString);
         await doctor.save();
-  
+
         return res.status(201).json({ message: 'Appointment booked successfully', appointment: savedAppointment });
     } catch (e) {
         console.error('Error booking appointment:', e);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 
 async function getAppointmentByPatient(req, res) {
     const patientId = req.params.id;
@@ -69,22 +72,24 @@ async function getAppointmentByPatient(req, res) {
 
 async function getAppointmentByDoctor(req, res) {
     const doctorId = req.params.id;
-  
+
     try {
-      const existingDoctor = await Doctor.findById(doctorId);
-  
-      if (!existingDoctor) {
-        return res.status(401).json({ message: 'The doctor does not exist' });
-      }
-  
-      const appointments = await Appointment.find({ doctorId: doctorId });
-  
-      return res.status(200).json({ message: 'Appointments fetched successfully', appointments: appointments });
+        const existingDoctor = await Doctor.findById(doctorId);
+
+        if (!existingDoctor) {
+            return res.status(401).json({ message: 'The doctor does not exist' });
+        }
+
+        // Find appointments and populate patient details
+        const appointments = await Appointment.find({ doctorId: doctorId }).populate('patientId', 'firstName lastName');
+
+        return res.status(200).json({ message: 'Appointments fetched successfully', appointments: appointments });
     } catch (e) {
-      console.error('Error fetching doctor appointments:', e);
-      res.status(500).json({ message: 'Internal server error' });
+        console.error('Error fetching doctor appointments:', e);
+        res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 
 async function cancelAppointment(req, res) { 
     const appointmentId = req.params.id;

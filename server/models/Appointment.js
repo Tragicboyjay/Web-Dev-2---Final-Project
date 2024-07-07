@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { type } = require('os');
 const Schema = mongoose.Schema;
 
 const appointmentSchema = new Schema({
@@ -13,13 +14,17 @@ const appointmentSchema = new Schema({
     required: true
   },
   date: {
-    type: Date,
-    required: true
-  },
-  startTime: {
     type: String,
     required: true
   },
+  time: {
+    type: String,
+    required: true
+  },
+  reason: {
+    type: String,
+    required: true
+  }
 }, {
   timestamps: true
 });
@@ -32,17 +37,26 @@ const seedAppointments = async () => {
 
     const appointments = [
         {
-          doctorId: "6687013941a1ed8d2d745bee", // a doctor in your db
+          doctorId: "668832be9c2f364fcb45a852", // a doctor in your db
           patientId: "6685a8f4cdc66ccf15f7a156", // a patient in your db
-          startTime: "09:00:00",
-          date: new Date('2024-07-10')
+          time: "09:00:00",
+          date: '2024-07-10',
+          reason: "sick"
 
         },
         {
-          doctorId: "6687013941a1ed8d2d745bee",
+          doctorId: "668832be9c2f364fcb45a852",
           patientId: "6685a8f4cdc66ccf15f7a156",
-          startTime: '11:00:00',
-          date: new Date('2024-07-11')
+          time: '11:00:00',
+          date: "2024-07-11",
+          reason: "sick"
+        },
+        {
+          doctorId: "668832be9c2f364fcb45a852",
+          patientId: "6685a8f4cdc66ccf15f7a156",
+          time: '11:00:00',
+          date: "2024-07-07",
+          reason: "sick"
         }
       ];
   
@@ -52,5 +66,5 @@ const seedAppointments = async () => {
       }
 }
 
-// seedAppointments()
+seedAppointments()
 module.exports = Appointment;

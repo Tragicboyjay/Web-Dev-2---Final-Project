@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -12,42 +12,70 @@ import {
   TableCaption,
   Container,
   Text,
-  Avatar,
   VStack,
 } from "@chakra-ui/react";
 import { useAuth } from '../context/authContext';
 import { useNavigate } from 'react-router-dom';
 
-const appointments = [
-  {
-    id: 1,
-    patientName: "John Doe",
-    time: "10:00 AM",
-    date: "2024-07-05",
-    reason: "General Checkup",
-    avatar: "..\assets\icon.png",
-  },
-  {
-    id: 2,
-    patientName: "Jane Smith",
-    time: "11:00 AM",
-    date: "2024-07-05",
-    reason: "Consultation",
-    avatar: "..\assets\icon.png",
-  },
-  // Add more appointments as needed
-];
+interface CustomError extends Error {
+  message: string;
+}
 
-
+interface Appointment {
+  _id: string;
+  patientId: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  };
+  date: string;
+  time: string;
+  reason?: string;
+}
 
 const DoctorDashboard: React.FC = () => {
+  const [fetchError, setFetchError] = useState("");
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [todayAppointments, setTodayAppointments] = useState<Appointment[]>([]);
+
   const { user, logoutUser } = useAuth();
   const navigate = useNavigate();
 
+  const fetchAppointments = async () => {
+    const doctorId = user?.id;
+
+    try {
+      const response = await fetch(`http://localhost:8080/appointment/doctor/${doctorId}`);
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      const data = await response.json();
+      const allAppointments: Appointment[] = data.appointments;
+
+      // Filter appointments for today
+      const today = new Date().toISOString().split('T')[0];
+      const todayAppointments = allAppointments.filter(appointment => appointment.date === today);
+
+      setAppointments(allAppointments);
+      setTodayAppointments(todayAppointments);
+    } catch (error) {
+      const typedError = error as CustomError;
+      setFetchError(typedError.message);
+    }
+  };
+
   useEffect(() => {
-    if(user && user.userType != "doctor") navigate("/")
-  
-  },)
+    if (user && user.userType !== "doctor") {
+      navigate("/");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   return (
     <Container maxW="container.xl" py={8}>
@@ -59,34 +87,41 @@ const DoctorDashboard: React.FC = () => {
           <Heading as="h2" size="lg" mb={4}>
             My Appointments
           </Heading>
-          <Table variant="simple">
-            <TableCaption>Appointments for Today</TableCaption>
-            <Thead>
-              <Tr>
-                <Th>Patient</Th>
-                <Th>Date</Th>
-                <Th>Time</Th>
-                <Th>Reason</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {appointments.map((appointment) => (
-                <Tr key={appointment.id}>
-                  <Td>
-                    <Flex align="center">
-                      <Avatar src={appointment.avatar} mr={3} />
-                      <VStack align="start">
-                        <Text>{appointment.patientName}</Text>
-                      </VStack>
-                    </Flex>
-                  </Td>
-                  <Td>{appointment.date}</Td>
-                  <Td>{appointment.time}</Td>
-                  <Td>{appointment.reason}</Td>
+          {fetchError && <Text align="center" color="red.500">{fetchError}</Text>}
+          {todayAppointments.length === 0 && (
+            <Text align="center" color="gray.500" mb={4}>
+              No appointments today.
+            </Text>
+          )}
+          {todayAppointments.length > 0 && (
+            <Table variant="simple">
+              <TableCaption>Appointments for Today</TableCaption>
+              <Thead>
+                <Tr>
+                  <Th>Patient</Th>
+                  <Th>Date</Th>
+                  <Th>Time</Th>
+                  <Th>Reason</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
+              </Thead>
+              <Tbody>
+                {todayAppointments.map((appointment) => (
+                  <Tr key={appointment._id}>
+                    <Td>
+                      <Flex align="center">
+                        <VStack align="start">
+                          <Text>{`${appointment.patientId.firstName} ${appointment.patientId.lastName}`}</Text>
+                        </VStack>
+                      </Flex>
+                    </Td>
+                    <Td>{appointment.date}</Td>
+                    <Td>{appointment.time}</Td>
+                    <Td>{appointment.reason ? appointment.reason : 'N/A'}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
         </Box>
       </Flex>
     </Container>
