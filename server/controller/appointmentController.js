@@ -3,19 +3,20 @@ const Doctor = require("../models/Doctor")
 const Appointment = require("../models/Appointment") 
 
 async function bookAppointment(req, res) {
-    const { doctorId, startDate, patientId } = req.body;
+    const { doctorId, startDate, patientId, time } = req.body;
 
     try {
         if (!doctorId || !startDate || !patientId) {
             return res.status(400).json({ message: 'Doctor ID, patient ID, and start date are required' });
         }
 
+        
         const startDateObj = new Date(startDate);
         const dateString = startDateObj.toISOString().split('T')[0];
-        const timeString = startDateObj.toISOString().split('T')[1].slice(0, 5);
+        const timeString = time;
 
         const doctor = await Doctor.findById(doctorId);
-
+        
         if (!doctor) {
             return res.status(404).json({ message: 'Doctor not found' });
         }

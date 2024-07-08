@@ -108,7 +108,7 @@ const AppointmentBooking: React.FC = () => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-   
+              time: selectedTime,
               startDate: selectedDate,
               doctorId: selectedDoctor?._id,
               patientId: patientId
