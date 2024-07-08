@@ -73,5 +73,5 @@ const seedAppointments = async () => {
       }
 }
 
-seedAppointments()
+// seedAppointments()
 module.exports = Appointment;

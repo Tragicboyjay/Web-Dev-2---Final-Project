@@ -12,13 +12,17 @@ import {
   TableCaption,
   Container,
   Text,
+  Button,
+  Toast,
 } from "@chakra-ui/react";
 import { useAuth } from '../context/authContext';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 interface CustomError extends Error {
   message: string;
 }
+
 
 interface Appointment {
   _id: string;
@@ -31,6 +35,31 @@ interface Appointment {
   time: string;
   reason?: string;
 }
+
+
+const cancelAppointment = async (appointmentId: string) => {
+  const [user, setUser] = useState<any>(null);
+  try {
+    await axios.delete(`/appointment/${appointmentId}`);
+    Toast({
+      title: 'Appointment canceled successfully.',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
+    
+    const updatedUser = { ...user, appointments: user.appointments.filter((appt: any) => appt.id !== appointmentId) };
+    setUser(updatedUser); // Update local state
+    localStorage.setItem('user', JSON.stringify(updatedUser)); // Update session storage
+  } catch (error) {
+    Toast({
+      title: 'Error canceling appointment.',
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+  }
+};
 
 const PatientDashboard: React.FC = () => {
   const [fetchError, setFetchError] = useState("");
@@ -117,6 +146,7 @@ const PatientDashboard: React.FC = () => {
                   <Th>Date</Th>
                   <Th>Time</Th>
                   <Th>Reason</Th>
+                  <Th>Action</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -126,6 +156,15 @@ const PatientDashboard: React.FC = () => {
                     <Td>{appointment.date}</Td>
                     <Td>{appointment.time}</Td>
                     <Td>{appointment.reason ?? 'N/A'}</Td>
+                    <Td>
+                  <Button
+                    colorScheme="red"
+                    size="sm"
+                    onClick={() => cancelAppointment(appointment._id)}
+                  >
+                    Cancel
+                  </Button>
+                </Td>
                   </Tr>
                 ))}
               </Tbody>

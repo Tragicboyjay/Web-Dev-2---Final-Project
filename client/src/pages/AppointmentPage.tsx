@@ -9,6 +9,7 @@ import {
   Fade,
   Grid,
   RadioGroup,
+  Toast,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -119,8 +120,15 @@ const AppointmentBooking: React.FC = () => {
             const data = await response.json()
             alert(data.message)
         }
+        else{
+          Toast({
+            title: "appointment booked succesfully",
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          });
+        }
 
-        alert("appointment booked succesfully")
         
     }catch (error) {
         console.log(error)
