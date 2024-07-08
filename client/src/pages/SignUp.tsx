@@ -50,7 +50,7 @@ const SignUp: React.FC = () => {
 
       
 
-      const newUser: user = {
+      const newUser: User = {
         firstName: firstNameInput,
         lastName: lastNameInput,
         email: emailInput,

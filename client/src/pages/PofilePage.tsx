@@ -164,7 +164,6 @@ const PatientDashboard: React.FC = () => {
                   <Th>Doctor</Th>
                   <Th>Date</Th>
                   <Th>Time</Th>
-                  <Th>Reason</Th>
                   <Th>Action</Th>
                 </Tr>
               </Thead>
@@ -174,7 +173,6 @@ const PatientDashboard: React.FC = () => {
                     <Td>{`${appointment.doctorId.firstName} ${appointment.doctorId.lastName}`}</Td>
                     <Td>{appointment.date}</Td>
                     <Td>{appointment.time}</Td>
-                    <Td>{appointment.reason ?? "N/A"}</Td>
                     <Td>
                       <Button
                         colorScheme="red"

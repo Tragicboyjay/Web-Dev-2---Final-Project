@@ -8,14 +8,14 @@ import {
   Button,
   Fade,
   Grid,
-  RadioGroup
+  RadioGroup,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 // import axios from "axios";
 import dayjs from "dayjs";
-import CustomRadioCard from "../components/CustomRadioCard"; 
-import TimeSlotRadioCard from "../components/TimeSlotRadioCard"; 
+import CustomRadioCard from "../components/CustomRadioCard";
+import TimeSlotRadioCard from "../components/TimeSlotRadioCard";
 import { getDoctors } from "../api/Doctor";
 import { useAuth } from "../context/authContext";
 import { useToast } from "@chakra-ui/react";
@@ -36,8 +36,8 @@ interface Doctor {
 const AppointmentBooking: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-  const [availableHours, setAvailableHours] = useState<string[]>([]); 
-  const [selectedTime, setSelectedTime] = useState<string | null>(null); 
+  const [availableHours, setAvailableHours] = useState<string[]>([]);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
   const { user } = useAuth();
@@ -57,21 +57,21 @@ const AppointmentBooking: React.FC = () => {
       const dateKey = dayjs(selectedDate).format("YYYY-MM-DD");
       const availability = selectedDoctor.availability[dateKey] || [];
       setAvailableHours(availability);
-      setSelectedTime(null); 
+      setSelectedTime(null);
     }
   }, [selectedDoctor, selectedDate]);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
-    setAvailableHours([]); 
-    setSelectedTime(null); 
+    setAvailableHours([]);
+    setSelectedTime(null);
   };
 
   const handleDoctorSelect = (doctor: Doctor) => {
     setSelectedDoctor(doctor);
-    setSelectedDate(null); 
-    setAvailableHours([]); 
-    setSelectedTime(null); 
+    setSelectedDate(null);
+    setAvailableHours([]);
+    setSelectedTime(null);
   };
 
   const handleTimeSelect = (time: string) => {
@@ -104,8 +104,8 @@ const AppointmentBooking: React.FC = () => {
           status: "error",
           duration: 3000,
           isClosable: true,
-          position: 'top', 
-          size: 'lg'
+          position: "top",
+          size: "lg",
         });
         navigate("/");
       } else {
@@ -114,8 +114,8 @@ const AppointmentBooking: React.FC = () => {
           status: "success",
           duration: 3000,
           isClosable: true,
-          position: 'top', 
-          size: 'lg'
+          position: "top",
+          size: "lg",
         });
         navigate("/");
       }
@@ -123,6 +123,8 @@ const AppointmentBooking: React.FC = () => {
       console.log(error);
     }
   };
+
+  
 
   return (
     <Container maxW="container.md" py={8}>
@@ -152,7 +154,7 @@ const AppointmentBooking: React.FC = () => {
             onChange={handleDateChange}
             minDate={new Date()}
             dateFormat="yyyy/MM/dd"
-            className="chakra-input"
+            placeholderText="Select a Date"
           />
         </FormControl>
         <Fade in={selectedDate !== null && selectedDoctor !== null}>
