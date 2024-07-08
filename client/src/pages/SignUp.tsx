@@ -48,9 +48,9 @@ const SignUp: React.FC = () => {
         throw new Error("All fields must be filled in.");
       }
 
-      let newUser: User;
+      
 
-      newUser = {
+      const newUser: user = {
         firstName: firstNameInput,
         lastName: lastNameInput,
         email: emailInput,
@@ -86,7 +86,7 @@ const SignUp: React.FC = () => {
         setErrorMessage(data.message);
         return;
       }
-
+      data.user.userType = "patient"
  
       loginUser(data.user);
       navigate("/");
