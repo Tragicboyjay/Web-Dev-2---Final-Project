@@ -101,7 +101,7 @@ const DoctorDashboard: React.FC = () => {
                   <Th>Patient</Th>
                   <Th>Date</Th>
                   <Th>Time</Th>
-                  <Th>Reason</Th>
+                  
                 </Tr>
               </Thead>
               <Tbody>
@@ -116,7 +116,6 @@ const DoctorDashboard: React.FC = () => {
                     </Td>
                     <Td>{appointment.date}</Td>
                     <Td>{appointment.time}</Td>
-                    <Td>{appointment.reason ? appointment.reason : 'N/A'}</Td>
                   </Tr>
                 ))}
               </Tbody>

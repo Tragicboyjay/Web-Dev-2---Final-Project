@@ -34,7 +34,7 @@ async function bookAppointment(req, res) {
             patientId: patientId,
             date: dateString,
             time: timeString
-        });
+        });w
 
         const savedAppointment = await newAppointment.save();
 
