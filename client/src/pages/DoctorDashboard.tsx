@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from '../context/authContext';
 import { useNavigate } from 'react-router-dom';
-
+import { useToast } from "@chakra-ui/react";
 interface CustomError extends Error {
   message: string;
 }
@@ -37,7 +37,7 @@ const DoctorDashboard: React.FC = () => {
   const [fetchError, setFetchError] = useState("");
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [todayAppointments, setTodayAppointments] = useState<Appointment[]>([]);
-
+  const toast = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -51,7 +51,15 @@ const DoctorDashboard: React.FC = () => {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message);
+        toast({
+          title: data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: 'top', 
+          size: 'lg'
+        });
+        navigate("/");
       }
 
       const data = await response.json();

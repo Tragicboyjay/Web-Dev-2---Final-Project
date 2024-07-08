@@ -167,5 +167,5 @@ async function hashPassword(password) {
 }
 
 // Seed doctors data on server startup
-seedDoctors();
+// seedDoctors();
 module.exports = Doctor;
