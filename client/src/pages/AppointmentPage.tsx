@@ -107,7 +107,7 @@ const AppointmentBooking: React.FC = () => {
           position: "top",
           size: "lg",
         });
-        navigate("/");
+        
       } else {
         toast({
           title: "appointment booked succesfully",
