@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useToast } from "@chakra-ui/react";
+
 import {
   Box,
   Flex,
@@ -13,55 +15,63 @@ import {
   Container,
   Text,
   Button,
-  Toast,
 } from "@chakra-ui/react";
-import { useAuth } from '../context/authContext';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-interface CustomError extends Error {
-  message: string;
-}
-
-
-interface Appointment {
-  _id: string;
-  doctorId: {
-    _id: string;
-    firstName: string;
-    lastName: string;
-  };
-  date: string;
-  time: string;
-  reason?: string;
-}
-
-
-const cancelAppointment = async (appointmentId: string) => {
-  const [user, setUser] = useState<any>(null);
-  try {
-    await axios.delete(`/appointment/${appointmentId}`);
-    Toast({
-      title: 'Appointment canceled successfully.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    
-    const updatedUser = { ...user, appointments: user.appointments.filter((appt: any) => appt.id !== appointmentId) };
-    setUser(updatedUser); // Update local state
-    localStorage.setItem('user', JSON.stringify(updatedUser)); // Update session storage
-  } catch (error) {
-    Toast({
-      title: 'Error canceling appointment.',
-      status: 'error',
-      duration: 3000,
-      isClosable: true,
-    });
-  }
-};
-
 const PatientDashboard: React.FC = () => {
+  const toast = useToast();
+  const [aUser, setUser] = useState<any>(null);
+
+  interface CustomError extends Error {
+    message: string;
+  }
+
+  interface Appointment {
+    _id: string;
+    doctorId: {
+      _id: string;
+      firstName: string;
+      lastName: string;
+    };
+    date: string;
+    time: string;
+    reason?: string;
+  }
+
+  const cancelAppointment = async (appointmentId: string) => {
+    try {
+      await axios.delete(`/appointment/${appointmentId}`);
+      toast({
+        title: "Appointment canceled successfully.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: 'top', 
+        size: 'lg'
+      });
+
+      const updatedUser = {
+        ...user,
+        appointments: aUser.appointments.filter(
+          (appt: any) => appt.id !== appointmentId
+        ),
+      };
+      setUser(updatedUser); // Update local state
+      localStorage.setItem("user", JSON.stringify(updatedUser)); // Update session storage
+    } catch (error) {
+      toast({
+        title: "Error canceling appointment.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: 'top', 
+        size: 'lg'
+      });
+    }
+  };
+
   const [fetchError, setFetchError] = useState("");
   const [appointments, setAppointments] = useState<Appointment[]>([]);
 
@@ -70,34 +80,40 @@ const PatientDashboard: React.FC = () => {
 
   const fetchAppointments = async () => {
     const patientId = user?._id || user?.id;
-  
+
     if (!patientId) {
       setFetchError("Patient ID is not available.");
       return;
     }
-  
+
     try {
-        setFetchError("")
-      const response = await fetch(`http://localhost:8080/appointment/patient/${patientId}`);
-  
+      setFetchError("");
+      const response = await fetch(
+        `http://localhost:8080/appointment/patient/${patientId}`
+      );
+
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message);
       }
-  
+
       const data = await response.json();
       const allAppointments: Appointment[] = data.appointments;
-  
+
       // Filter appointments for today and future
-      const today = new Date().toISOString().split('T')[0];
-      const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
-      const filteredAppointments = allAppointments.filter(appointment => {
+      const today = new Date().toISOString().split("T")[0];
+      const currentTime = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      const filteredAppointments = allAppointments.filter((appointment) => {
         if (appointment.date < today) return false;
-        if (appointment.date === today && appointment.time <= currentTime) return false;
+        if (appointment.date === today && appointment.time <= currentTime)
+          return false;
         return true;
       });
-  
+
       // Sort appointments by date and time
       filteredAppointments.sort((a, b) => {
         if (a.date === b.date) {
@@ -105,21 +121,20 @@ const PatientDashboard: React.FC = () => {
         }
         return a.date.localeCompare(b.date);
       });
-  
+
       setAppointments(filteredAppointments);
     } catch (error) {
       const typedError = error as CustomError;
       setFetchError(typedError.message);
     }
   };
-  
+
   useEffect(() => {
     if (user && user.userType !== "patient") {
       navigate("/");
     }
     fetchAppointments();
   }, [user]);
-
 
   return (
     <Container maxW="container.xl" py={8}>
@@ -131,7 +146,11 @@ const PatientDashboard: React.FC = () => {
           <Heading as="h2" size="lg" mb={4}>
             My Appointments
           </Heading>
-          {fetchError && <Text align="center" color="red.500">{fetchError}</Text>}
+          {fetchError && (
+            <Text align="center" color="red.500">
+              {fetchError}
+            </Text>
+          )}
           {appointments.length === 0 && (
             <Text align="center" color="gray.500" mb={4}>
               No appointments scheduled.
@@ -155,16 +174,16 @@ const PatientDashboard: React.FC = () => {
                     <Td>{`${appointment.doctorId.firstName} ${appointment.doctorId.lastName}`}</Td>
                     <Td>{appointment.date}</Td>
                     <Td>{appointment.time}</Td>
-                    <Td>{appointment.reason ?? 'N/A'}</Td>
+                    <Td>{appointment.reason ?? "N/A"}</Td>
                     <Td>
-                  <Button
-                    colorScheme="red"
-                    size="sm"
-                    onClick={() => cancelAppointment(appointment._id)}
-                  >
-                    Cancel
-                  </Button>
-                </Td>
+                      <Button
+                        colorScheme="red"
+                        size="sm"
+                        onClick={() => cancelAppointment(appointment._id)}
+                      >
+                        Cancel
+                      </Button>
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>

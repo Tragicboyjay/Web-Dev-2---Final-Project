@@ -8,6 +8,7 @@ import {
   Text,
   Link as ChakraLink,
   Box,
+  Toast,
 
 } from "@chakra-ui/react";
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
@@ -73,6 +74,12 @@ const SignUp: React.FC = () => {
         throw new Error(errorData.message);
       }
 
+      Toast({
+        title: 'Account Created Successfully.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
       const data = await response.json();
 
       if (!data.user) {

@@ -4,13 +4,13 @@ const Patient = require("../models/Patient");
 const Doctor = require("../models/Doctor");
 
 async function createUser(req, res) {
-    const type = req.params.type;
-    const { firstName, lastName, password, email, practice, appointments } = req.body;
+   
+    const { firstName, lastName, password, email, appointments } = req.body;
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        if (type === "patient") {
+        
             const existingEmail = await Patient.findOne({ email });
 
             if (existingEmail) return res.status(400).json({ message: 'Email already exists' });
@@ -35,35 +35,9 @@ async function createUser(req, res) {
             };
 
             return res.status(201).json({ message: "Patient created successfully!", user: userWithoutPassword });
-        }
+        
 
-        else if (type === "doctor") {
-            const existingEmail = await Doctor.findOne({ email });
-
-            if (existingEmail) return res.status(400).json({ message: 'Email already exists' });
-
-            const newDoctor = new Doctor({
-                firstName,
-                lastName,
-                email,
-                password: hashedPassword,
-                practice
-            });
-
-            const addedDoctor = await newDoctor.save();
-
-            // Omit password from the user object sent to the client
-            const userWithoutPassword = {
-                _id: addedDoctor._id,
-                firstName: addedDoctor.firstName,
-                lastName: addedDoctor.lastName,
-                email: addedDoctor.email,
-                practice: addedDoctor.practice,
-            };
-
-            return res.status(201).json({ message: "Doctor created successfully!", user: userWithoutPassword });
-        }
-
+        
     } catch (e) {
         console.error('Error creating user:', e);
         res.status(500).json({ message: 'Internal server error' });

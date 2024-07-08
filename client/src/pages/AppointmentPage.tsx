@@ -15,11 +15,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 // import axios from "axios";
 import dayjs from "dayjs";
-import CustomRadioCard from "../components/CustomRadioCard"; // Adjust the path based on your project structure
-import TimeSlotRadioCard from "../components/TimeSlotRadioCard"; // Adjust the path based on your project structure
+import CustomRadioCard from "../components/CustomRadioCard"; 
+import TimeSlotRadioCard from "../components/TimeSlotRadioCard"; 
 import { getDoctors } from "../api/Doctor";
-import { useAuth } from '../context/authContext';
-
+import { useAuth } from "../context/authContext";
+import { useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 interface Doctor {
   _id: string;
   firstName: string;
@@ -27,22 +28,22 @@ interface Doctor {
   email: string;
   password: string;
   practice: string;
-  avatar: string; // URL to avatar image
+  avatar: string;
   availability: {
-    [date: string]: string[]; // Map of date strings to arrays of times
+    [date: string]: string[];
   };
 }
 
 const AppointmentBooking: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-  const [availableHours, setAvailableHours] = useState<string[]>([]); // State to hold available hours
-  const [selectedTime, setSelectedTime] = useState<string | null>(null); // State to hold selected time slot
-
+  const [availableHours, setAvailableHours] = useState<string[]>([]); 
+  const [selectedTime, setSelectedTime] = useState<string | null>(null); 
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
   const { user } = useAuth();
-
+  const navigate = useNavigate();
+  const toast = useToast();
   useEffect(() => {
     const fetchDoctors = async () => {
       const doctorData = await getDoctors();
@@ -57,21 +58,21 @@ const AppointmentBooking: React.FC = () => {
       const dateKey = dayjs(selectedDate).format("YYYY-MM-DD");
       const availability = selectedDoctor.availability[dateKey] || [];
       setAvailableHours(availability);
-      setSelectedTime(null); // Reset selected time when date or doctor changes
+      setSelectedTime(null); 
     }
   }, [selectedDoctor, selectedDate]);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
-    setAvailableHours([]); // Reset available hours when date changes
-    setSelectedTime(null); // Reset selected time
+    setAvailableHours([]); 
+    setSelectedTime(null); 
   };
 
   const handleDoctorSelect = (doctor: Doctor) => {
     setSelectedDoctor(doctor);
-    setSelectedDate(null); // Reset selected date when doctor changes
-    setAvailableHours([]); // Reset available hours
-    setSelectedTime(null); // Reset selected time
+    setSelectedDate(null); 
+    setAvailableHours([]); 
+    setSelectedTime(null); 
   };
 
   const handleTimeSelect = (time: string) => {
@@ -83,55 +84,36 @@ const AppointmentBooking: React.FC = () => {
 
     const patientId = user?._id || user?.id;
 
-    
-//     if (selectedDate && selectedDoctor && selectedTime) {
-//       try {
-//         await axios.post("http://localhost:8080/appointment/book", {
-          
-//           startDate: selectedDate,
-//           doctorId: selectedDoctor._id,
-//           patientId: patientId
-//         });
-//         alert("Appointment booked successfully!");
-//       } catch (error) {
-//         console.error("Error booking appointment", error);
-//         alert("Failed to book appointment.");
-//       }
-//     } else {
-//       alert("Please select a date, doctor, and time.");
-//     }
-//   };
+    try {
+      const response = await fetch("http://localhost:8080/appointment/book", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          time: selectedTime,
+          startDate: selectedDate,
+          doctorId: selectedDoctor?._id,
+          patientId: patientId,
+        }),
+      });
 
-    try{
-        const response = await fetch("http://localhost:8080/appointment/book", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              time: selectedTime,
-              startDate: selectedDate,
-              doctorId: selectedDoctor?._id,
-              patientId: patientId
-            }),
-        })
-
-        if (!response.ok){
-            const data = await response.json()
-            alert(data.message)
-        }
-        else{
-          Toast({
-            title: "appointment booked succesfully",
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-          });
-        }
-
-        
-    }catch (error) {
-        console.log(error)
+      if (!response.ok) {
+        const data = await response.json();
+        alert(data.message);
+      } else {
+        toast({
+          title: "appointment booked succesfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: 'top', 
+          size: 'lg'
+        });
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

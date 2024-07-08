@@ -14,7 +14,7 @@ import { FC } from "react";
 import logo from "../assets/logo.png";
 const Links = ["Home", "Book an Appointment", "Login", "Profile"];
 import { useAuth } from '../context/authContext'; 
-
+import { useToast } from "@chakra-ui/react";
 const NavLink: FC<{ children: React.ReactNode }> = ({ children }) => (
   <Link
     px={2}
@@ -33,11 +33,19 @@ const NavLink: FC<{ children: React.ReactNode }> = ({ children }) => (
 const Navbar: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, logoutUser } = useAuth();
-
+  const toast = useToast();
   const navigate = useNavigate()
 
   const handleLogOut = () => {
     logoutUser();
+    toast({
+      title: "Logged Out Succesfully",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: 'top', 
+      size: 'lg'
+    });
     navigate('/sign_in');
   }
   return (

@@ -7,7 +7,7 @@ const {
 } 
 = require("../controller/authController");
 
-router.post("/create/:type", createUser);
+router.post("/create", createUser);
 router.post("/authenticate/:type", authenticateUser);
 
 
