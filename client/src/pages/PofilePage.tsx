@@ -84,7 +84,6 @@ const PatientDashboard: React.FC = () => {
     }
   };
   
-
   useEffect(() => {
     if (user && user.userType !== "patient") {
       navigate("/");
