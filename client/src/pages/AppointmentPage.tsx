@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
+// import axios from "axios";
 import dayjs from "dayjs";
 import CustomRadioCard from "../components/CustomRadioCard"; // Adjust the path based on your project structure
 import TimeSlotRadioCard from "../components/TimeSlotRadioCard"; // Adjust the path based on your project structure
@@ -83,21 +83,47 @@ const AppointmentBooking: React.FC = () => {
     const patientId = user?._id || user?.id;
 
     
-    if (selectedDate && selectedDoctor && selectedTime) {
-      try {
-        await axios.post("http://localhost:8080/appointment/book", {
+//     if (selectedDate && selectedDoctor && selectedTime) {
+//       try {
+//         await axios.post("http://localhost:8080/appointment/book", {
           
-          startDate: selectedDate,
-          doctorId: selectedDoctor._id,
-          patientId: patientId
-        });
-        alert("Appointment booked successfully!");
-      } catch (error) {
-        console.error("Error booking appointment", error);
-        alert("Failed to book appointment.");
-      }
-    } else {
-      alert("Please select a date, doctor, and time.");
+//           startDate: selectedDate,
+//           doctorId: selectedDoctor._id,
+//           patientId: patientId
+//         });
+//         alert("Appointment booked successfully!");
+//       } catch (error) {
+//         console.error("Error booking appointment", error);
+//         alert("Failed to book appointment.");
+//       }
+//     } else {
+//       alert("Please select a date, doctor, and time.");
+//     }
+//   };
+
+    try{
+        const response = await fetch("http://localhost:8080/appointment/book", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+   
+              startDate: selectedDate,
+              doctorId: selectedDoctor?._id,
+              patientId: patientId
+            }),
+        })
+
+        if (!response.ok){
+            const data = await response.json()
+            alert(data.message)
+        }
+
+        alert("appointment booked succesfully")
+        
+    }catch (error) {
+        console.log(error)
     }
   };
 
