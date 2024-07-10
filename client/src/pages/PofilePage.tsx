@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 
 const PatientDashboard: React.FC = () => {
   const toast = useToast();
@@ -42,35 +42,55 @@ const PatientDashboard: React.FC = () => {
 
   const cancelAppointment = async (appointmentId: string) => {
     try {
-      await axios.delete(`/appointment/${appointmentId}`);
+      const response = await fetch(`http://localhost:8080/appointment/${appointmentId}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to cancel appointment');
+      }
+  
+      const updatedAppointments = appointments.filter(
+        (appt) => appt._id !== appointmentId
+      );
+      setAppointments(updatedAppointments); // Update local state
+  
+      // Optionally update user state if needed
+      if (user) {
+        const updatedUser = {
+          ...user,
+          appointments: updatedAppointments,
+        };
+        setUser(updatedUser); // Update user state
+        localStorage.setItem("user", JSON.stringify(updatedUser)); // Update session storage
+      }
+
       toast({
         title: "Appointment canceled successfully.",
         status: "success",
         duration: 3000,
         isClosable: true,
-        position: 'top', 
+        position: 'top',
         size: 'lg'
       });
-
-      const updatedUser = {
-        ...user,
-        appointments: aUser.appointments.filter(
-          (appt: any) => appt.id !== appointmentId
-        ),
-      };
-      setUser(updatedUser); // Update local state
-      localStorage.setItem("user", JSON.stringify(updatedUser)); // Update session storage
+  
     } catch (error) {
+      const typedError = error as CustomError;
       toast({
         title: "Error canceling appointment.",
+        description: typedError.message,
         status: "error",
         duration: 3000,
         isClosable: true,
-        position: 'top', 
+        position: 'top',
         size: 'lg'
       });
     }
   };
+  
+  
+  
 
   const [fetchError, setFetchError] = useState("");
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -133,7 +153,9 @@ const PatientDashboard: React.FC = () => {
     if (user && user.userType !== "patient") {
       navigate("/");
     }
-    fetchAppointments();
+    else if (user && user.userType === "patient") {
+        fetchAppointments();
+    } 
   }, [user]);
 
   return (

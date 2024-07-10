@@ -81,7 +81,9 @@ const DoctorDashboard: React.FC = () => {
     if (user && user.userType !== "doctor") {
       navigate("/");
     }
-    fetchAppointments();
+    else if (user && user.userType === "doctor") {
+        fetchAppointments();
+    }
   }, [user]);
 
 

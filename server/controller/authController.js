@@ -70,7 +70,7 @@ async function authenticateUser(req,res) {
             firstName: existingUser.firstName,
             lastName: existingUser.lastName,
             email: existingUser.email,
-            id: existingUser._id,
+            _id: existingUser._id,
             practice: existingUser.practice
         }});
     } catch (e) {

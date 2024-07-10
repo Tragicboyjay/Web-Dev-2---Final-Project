@@ -81,6 +81,8 @@ const SignIn: React.FC = () => {
         setErrorMessage(data.message);
         return;
       }
+
+      console.log(data.user)
   
       data.user.userType = userType; // Ensure userType is set
   

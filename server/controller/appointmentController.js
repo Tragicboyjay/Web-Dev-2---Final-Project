@@ -104,7 +104,7 @@ async function getAppointmentByDoctor(req, res) {
 }
 
 
-async function cancelAppointment(req, res) { 
+async function cancelAppointment(req, res) {
     const appointmentId = req.params.id;
 
     try {
@@ -114,7 +114,24 @@ async function cancelAppointment(req, res) {
             return res.status(404).json({ message: 'Appointment not found' });
         }
 
+        const doctor = await Doctor.findById(appointment.doctorId);
+
+        if (!doctor) {
+            return res.status(404).json({ message: 'Doctor not found' });
+        }
+
+        // Delete the appointment
         await Appointment.deleteOne({ _id: appointmentId });
+
+        // Update the doctor's availability
+        const dateString = appointment.date;
+        const timeString = appointment.time;
+
+        if (doctor.availability.get(dateString)) {
+            const updatedTimes = [...doctor.availability.get(dateString), timeString].sort();
+            doctor.availability.set(dateString, updatedTimes);
+            await doctor.save();
+        }
 
         return res.status(200).json({ message: 'Appointment deleted successfully' });
 
@@ -123,6 +140,7 @@ async function cancelAppointment(req, res) {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 
 async function editAppointmentDate(req,res) {
     const appointmentId = req.params.id;
