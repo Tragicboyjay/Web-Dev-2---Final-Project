@@ -39,7 +39,7 @@ const doctors = [
     firstName: 'John',
     lastName: 'Smith',
     email: 'john.smith@example.com',
-    password: 'test123', // Password to be hashed
+    password: 'test123', 
     practice: 'Cardiology', 
     availability: {
       '2024-07-08': ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],

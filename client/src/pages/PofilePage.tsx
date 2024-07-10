@@ -119,30 +119,18 @@ const PatientDashboard: React.FC = () => {
 
       const data = await response.json();
       const allAppointments: Appointment[] = data.appointments;
-
-      // Filter appointments for today and future
-      const today = new Date().toISOString().split("T")[0];
-      const currentTime = new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-
-      const filteredAppointments = allAppointments.filter((appointment) => {
-        if (appointment.date < today) return false;
-        if (appointment.date === today && appointment.time <= currentTime)
-          return false;
-        return true;
-      });
+     
 
       // Sort appointments by date and time
-      filteredAppointments.sort((a, b) => {
+      allAppointments.sort((a, b) => {
         if (a.date === b.date) {
           return a.time.localeCompare(b.time);
         }
         return a.date.localeCompare(b.date);
       });
+      
 
-      setAppointments(filteredAppointments);
+      setAppointments(allAppointments);
     } catch (error) {
       const typedError = error as CustomError;
       setFetchError(typedError.message);
@@ -154,6 +142,7 @@ const PatientDashboard: React.FC = () => {
       navigate("/");
     }
     else if (user && user.userType === "patient") {
+      
         fetchAppointments();
     } 
   }, [user]);
